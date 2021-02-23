@@ -1,0 +1,33 @@
+#loginDiv
+{
+  display:flex;
+  align-items:center;
+  border-radius:25px;
+  border-width:4;
+  border-color:#2E002B;
+  border-style:solid;
+  padding:5;
+  margin-right:60px;
+}
+
+#loginDiv:hover
+{
+  background-color: #2E162E;
+  cursor: pointer;
+}
+
+#loginBoxDiv
+{
+  padding: 15px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius:25px;
+  background-color: #646464;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height:65px;
+  position: absolute;
+  top:100px;
+}

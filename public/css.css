@@ -1,0 +1,110 @@
+*
+{
+  font-size: 20px;
+  font-family: Verdana;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+  color: #fff;
+}
+
+img {
+  border-radius: 40%;
+}
+
+header
+{
+  display:flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #2F282F;
+}
+
+body
+{
+  margin: 0px;
+  background-color: #3A3A3A;
+}
+
+article
+{
+  padding-left: 20vw;
+  padding-right: 20vw;
+}
+
+article p, article ul
+{
+  text-align: left;
+}
+
+footer
+{
+  margin-top: 100px;
+  background-color: #2F2F2F;
+}
+
+
+li
+{
+  margin-bottom: 15px;
+}
+
+ul
+{
+  list-style-type: none;
+}
+
+a
+{
+  color: #ddd;
+  /* transition: color 0.2s ease 0.1s Need to be implemented with JS*/
+}
+
+a:hover
+{
+  color: #fff;
+}
+
+h1
+{
+  text-align: center;
+  font-size: 50px;
+}
+
+h2
+{
+  font-size: 30px;
+}
+
+strong
+{
+  font-size: 30px;
+}
+
+p
+{
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.bold
+{
+    font-weight: bold;
+}
+
+.visible
+{
+  transition: opacity 0.2s;
+  opacity: 1;
+}
+
+.invisible
+{
+  transition: opacity 0.2s;
+  opacity: 0;
+  pointer-events:none;
+}

@@ -1,0 +1,13 @@
+{
+  "name": "waifu fight",
+  "version": "1.0.0",
+  "description": "a web browser game",
+  "main": "pwfMain.js",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "level": "^6.0.1",
+    "socket.io": "^3.1.1",
+    "express":"^4.17.1"
+  },
+  "author": "Asylnn"
+}

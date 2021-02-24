@@ -4,7 +4,7 @@ import ScoreElement from './scoreElement.js'
 export default class ScoresDisplay extends React.Component{
 
   render(){
-    const scoreElements = this.props.scores.map(score => e(ScoreElement, {key:score.id, score:score}))
+    const scoreElements = this.props.scores.map(score => {console.log(score.reactMapId); return e(ScoreElement, {key:score.reactMapId, score:score})})
 
     let style = {
       padding: "15",

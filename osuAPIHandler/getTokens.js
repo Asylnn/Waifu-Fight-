@@ -1,6 +1,5 @@
 const axios = require('axios')
 const {ipAddr, users} = require('../levelExtention.js')
-const fs = require('fs')
 const {user} = require('../classes/user.js')
 const {OSU_API_URL,OSU_CLIENT_ID, OSU_SECRET} = require('../files/config.json')
 const {getHeaders} = require('./getHeaders.js')

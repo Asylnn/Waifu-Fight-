@@ -21,7 +21,7 @@ const refreshTokens = (refresh_token, self) => {
       users.get("10669137").then(user => {
         user.tokenInfo = axiosRes.data
       })
-      fs.writeFile('../PWF v2/files/selfTokens.json', JSON.stringify(axiosRes.data), function(err){console.log(err)})
+      fs.writeFile('../test2/files/selfTokens.json', JSON.stringify(axiosRes.data), function(err){console.log(err)})
       global.selfTokens = axiosRes.data
     }).catch(err => {
       console.log(err)

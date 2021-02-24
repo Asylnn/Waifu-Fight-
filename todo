@@ -1,0 +1,4 @@
+socket io use ws connection and isn't safe
+ping user to see if client didn't disconnect without calling 'disconnect' (ex: pulling the cable)
+Token refresh for user
+add scoreHandler for fruit mania and taiko

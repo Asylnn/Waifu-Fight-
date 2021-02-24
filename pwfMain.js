@@ -10,6 +10,7 @@ global.selfTokens = {}
 
 const {refreshTokens} = require('./osuAPIHandler/refreshTokens')
 const {getTokens} = require("./osuAPIHandler/getTokens")
+const {getBotPublicTokens} = require('./osuAPIHandler/getBotPublicTokens')
 
 const refreshBotTokens = () => {
   refreshTokens(selfTokens.refresh_token, true) //Refreshing the bot's token for API access
@@ -53,6 +54,8 @@ io.on('connection', socket => {
     socket.clientIp = "local"
   }
 
+  console.log("new connexion from", socket.clientIp)
+
   socket.userClient = {id:"-1", imgURL:OSULOGOURL, username:CONNECTTEXT, registred:false} //userClient with limited data
   socket.user = socket.userClient //user is server side user with all data
   socket.emit('info', {redirectURL:REDIRECT_URL}) //give redirectURL to client
@@ -60,8 +63,10 @@ io.on('connection', socket => {
 
 
   socket.on('disconnect', () => {
+
+    console.log(socket.clientIp, "disconnected")
+
     if(socket.user.id != "-1"){ //IP address is enregistred but never connected
-      console.log(socket.user.id)
       clearInterval(allClients[socket.user.id].intervalId) //We stop all automatic request to the osu API
       delete allClients[socket.user.id]
     }
@@ -108,9 +113,14 @@ app.get('/login', (req, res) => {
   res.redirect(REDIRECT_URL)
 });
 
+app.get('/loginBot', (req, res) => {
+  res.redirect(SELF_REDIRECT_URL)
+});
+
 app.get('/accepted', (req, res) => { //OAuth2 Request
   if(req.ip == "::1" || req.ip == "::ffff:127.0.0.1"){
     req.ip = "local"
+    getBotPublicTokens(req)
   }
 
   getTokens(req, res)

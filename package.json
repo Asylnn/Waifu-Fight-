@@ -1,13 +1,24 @@
 {
-  "name": "waifu fight",
+  "name": "waifuFight",
   "version": "1.0.0",
   "description": "a web browser game",
   "main": "pwfMain.js",
   "dependencies": {
+    "@types/express": "^4.17.11",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "@types/socket.io": "^2.1.13",
+    "@types/socket.io-client": "^1.4.35",
     "axios": "^0.21.1",
+    "express": "^4.17.1",
     "level": "^6.0.1",
-    "socket.io": "^3.1.1",
-    "express":"^4.17.1"
+    "level-ts": "^2.0.6",
+    "socket.io": "^3.1.2",
+    "typescript": "^4.2.2"
+  },
+  "scripts": {
+    "comp": "start runtsc.bat",
+    "start-server": "node ./dist/pwfMain.js"
   },
   "author": "Asylnn"
 }

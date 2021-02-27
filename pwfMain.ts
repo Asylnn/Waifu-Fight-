@@ -1,24 +1,25 @@
-const express = require('express')
+import express from 'express'
 const app = express()
-const axios = require('axios')
-const {ipAddr, users} = require('./levelExtention.js')
+import {ipAddr, users} from './levelExtention.js'
 ipAddr.put("local", "10669137")
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const fs = require('fs')
-global.selfTokens = {}
+import fs from 'fs'
+(global as any).selfTokens = {}
 
-const {refreshTokens} = require('./osuAPIHandler/refreshTokens')
-const {getTokens} = require("./osuAPIHandler/getTokens")
-const {getBotPublicTokens} = require('./osuAPIHandler/getBotPublicTokens')
+import refreshTokens from './osuAPIHandler/refreshTokens'
+import getTokens from "./osuAPIHandler/getTokens"
+import getBotPublicTokens from './osuAPIHandler/getBotPublicTokens'
+import deleteTokens from './osuAPIHandler/deleteTokens'
+import updateClientScores from "./clientServerCommunication"
 
 const refreshBotTokens = () => {
-  refreshTokens(selfTokens.refresh_token, true) //Refreshing the bot's token for API access
+  refreshTokens((global as any).selfTokens.refresh_token, true) //Refreshing the bot's token for API access
 }
 
-fs.readFile('./files/selfTokens.json', function(err, data) {
-  selfTokens = JSON.parse(data)
-  refreshTokens(selfTokens.refresh_token, true) //Refreshing the bot's token for API access
+fs.readFile('./files/selfTokens.json', function(_err, data) {
+  (global as any).selfTokens = JSON.parse(data as unknown as string)
+  refreshTokens((global as any).selfTokens.refresh_token, true) //Refreshing the bot's token for API access
   setInterval(refreshBotTokens, 86000000) //Needs to be tested, refresh API tokens every day
 });
 
@@ -27,29 +28,25 @@ fs.readFile('./files/selfTokens.json', function(err, data) {
 
 
 
-const {deleteTokens} = require('./osuAPIHandler/deleteTokens')
-const {updateClientScores} = require("./clientServerCommunication")
 
 
 
-const {HOST, OSU_CLIENT_ID, PORT, OSULOGOURL, CONNECTTEXT} = require('./files/config.json')
-const REDIRECT_URL = `https://osu.ppy.sh/oauth/authorize?client_id=${OSU_CLIENT_ID}&redirect_uri=${HOST}/accepted&response_type=code&scope=identify`
-const SELF_REDIRECT_URL = `https://osu.ppy.sh/oauth/authorize?client_id=${OSU_CLIENT_ID}&redirect_uri=${HOST}/accepted&response_type=code&scope=public`
 
-var allClients = {}
-var i = 0
+import {HOST, OSU_CLIENT_ID, PORT, OSULOGOURL, CONNECTTEXT} from './files/config.json'
+const REDIRECT_URL = `https://osu.ppy.sh/oauth/authorize?client_id=${OSU_CLIENT_ID}&redirect_uri=${HOST}&response_type=code&scope=identify`
+const SELF_REDIRECT_URL = `https://osu.ppy.sh/oauth/authorize?client_id=${OSU_CLIENT_ID}&redirect_uri=${HOST}&response_type=code&scope=public`
+
+var allClients:any = {}
 
 //INIT
-app.use(express.static("public"));
+app.use(express.static("./dist/public"));
 app.set('trust proxy', true)
 server.listen(PORT, () => {
   console.log("listening...");
 });
 //INIT END
 
-
-
-io.on('connection', socket => {
+io.on('connection', (socket: any) => {
   if(socket.request.connection.remoteAddress == "::1" || socket.request.connection.remoteAddress == "::ffff:127.0.0.1"){
     socket.clientIp = "local"
   }
@@ -75,13 +72,11 @@ io.on('connection', socket => {
 
   ipAddr.get(socket.clientIp).then(async function(userId){
     if(userId != "-1"){
-      socket.user = await users.getUser(userId)
+      socket.user = await (users as any).getUser(userId)
       socket.userClient = socket.user.convertToClient()
       allClients[userId] = {
         intervalId:setInterval(function(){updateClientScores(socket)}, 7500) //We make automatic request to osu API
       }
-    }
-    else{
     }
   }).catch((err) => {
     if(err.notFound){ //If the user connect to the site for the first time
@@ -96,32 +91,32 @@ io.on('connection', socket => {
 
 
 
-  socket.on('logout', data => { //Client want to log out
+  socket.on('logout', () => { //Client want to log out
     deleteTokens(socket)
   })
 
-  socket.on('testing', data => { //Client want to log out
+  socket.on('getNewScores', (_data: any) => { //Client want to log out
     updateClientScores(socket)
   });
 })
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.redirect('/main.html')
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', (_req, res) => {
   res.redirect(REDIRECT_URL)
 });
 
-app.get('/loginBot', (req, res) => {
+app.get('/loginBot', (_req, res) => {
   res.redirect(SELF_REDIRECT_URL)
 });
 
 app.get('/accepted', (req, res) => { //OAuth2 Request
   if(req.ip == "::1" || req.ip == "::ffff:127.0.0.1"){
-    req.ip = "local"
-    getBotPublicTokens(req)
+    getBotPublicTokens(req, res)
   }
-
-  getTokens(req, res)
+  else {
+    getTokens(req, res)
+  }
 });

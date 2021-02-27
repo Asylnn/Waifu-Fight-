@@ -1,3 +1,6 @@
 /files
 /node_modules
 testingSnippet.js
+/dist
+/public/dist
+package-lock.json

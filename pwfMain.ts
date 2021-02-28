@@ -5,21 +5,27 @@ ipAddr.put("local", "10669137")
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 import fs from 'fs'
-(global as any).selfTokens = {}
+
+declare global {
+  var selfTokens: tokenInfo
+}
 
 import refreshTokens from './osuAPIHandler/refreshTokens'
 import getTokens from "./osuAPIHandler/getTokens"
 import getBotPublicTokens from './osuAPIHandler/getBotPublicTokens'
 import deleteTokens from './osuAPIHandler/deleteTokens'
-import updateClientScores from "./clientServerCommunication"
+import {mods, tokenInfo} from './osuAPIHandler/interfaces'
+
+import updateClientScores from "./clientServerCommunication/updateClientScores"
+
 
 const refreshBotTokens = () => {
-  refreshTokens((global as any).selfTokens.refresh_token, true) //Refreshing the bot's token for API access
+  refreshTokens(global.selfTokens.refresh_token, true) //Refreshing the bot's token for API access
 }
 
 fs.readFile('./files/selfTokens.json', function(_err, data) {
-  (global as any).selfTokens = JSON.parse(data as unknown as string)
-  refreshTokens((global as any).selfTokens.refresh_token, true) //Refreshing the bot's token for API access
+  global.selfTokens = JSON.parse(data as unknown as string)
+  refreshTokens(global.selfTokens.refresh_token, true) //Refreshing the bot's token for API access
   setInterval(refreshBotTokens, 86000000) //Needs to be tested, refresh API tokens every day
 });
 
@@ -32,11 +38,9 @@ fs.readFile('./files/selfTokens.json', function(_err, data) {
 
 
 
-import {HOST, OSU_CLIENT_ID, PORT, OSULOGOURL, CONNECTTEXT} from './files/config.json'
+import {HOST, OSU_CLIENT_ID, PORT, OSULOGOURL, CONNECTTEXT, TIME_BETWEEN_SCORES_REQUEST} from './files/config.json'
 const REDIRECT_URL = `https://osu.ppy.sh/oauth/authorize?client_id=${OSU_CLIENT_ID}&redirect_uri=${HOST}&response_type=code&scope=identify`
 const SELF_REDIRECT_URL = `https://osu.ppy.sh/oauth/authorize?client_id=${OSU_CLIENT_ID}&redirect_uri=${HOST}&response_type=code&scope=public`
-
-var allClients:any = {}
 
 //INIT
 app.use(express.static("./dist/public"));
@@ -55,28 +59,21 @@ io.on('connection', (socket: any) => {
 
   socket.userClient = {id:"-1", imgURL:OSULOGOURL, username:CONNECTTEXT, registred:false} //userClient with limited data
   socket.user = socket.userClient //user is server side user with all data
-  socket.emit('info', {redirectURL:REDIRECT_URL}) //give redirectURL to client
+  socket.emit('info', {redirectURL:REDIRECT_URL, timeBetweenScoresRequest:TIME_BETWEEN_SCORES_REQUEST}) //give redirectURL to client
 
-
-
-  socket.on('disconnect', () => {
-
+  /*socket.on('disconnect', () => {
     console.log(socket.clientIp, "disconnected")
+  })*/
 
-    if(socket.user.id != "-1"){ //IP address is enregistred but never connected
-      clearInterval(allClients[socket.user.id].intervalId) //We stop all automatic request to the osu API
-      delete allClients[socket.user.id]
-    }
+  socket.on('requestScores', (data: mods) => {
+    console.log("what")
+    updateClientScores(socket, data)
   })
-
 
   ipAddr.get(socket.clientIp).then(async function(userId){
     if(userId != "-1"){
       socket.user = await (users as any).getUser(userId)
       socket.userClient = socket.user.convertToClient()
-      allClients[userId] = {
-        intervalId:setInterval(function(){updateClientScores(socket)}, 7500) //We make automatic request to osu API
-      }
     }
   }).catch((err) => {
     if(err.notFound){ //If the user connect to the site for the first time
@@ -89,15 +86,10 @@ io.on('connection', (socket: any) => {
     socket.emit('userInfo', socket.userClient) //send user to the client as first connection
   })
 
-
-
   socket.on('logout', () => { //Client want to log out
     deleteTokens(socket)
   })
 
-  socket.on('getNewScores', (_data: any) => { //Client want to log out
-    updateClientScores(socket)
-  });
 })
 
 app.get('/', (_req, res) => {

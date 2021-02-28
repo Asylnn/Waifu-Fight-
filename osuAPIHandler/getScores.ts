@@ -4,7 +4,8 @@ import getHeaders from './getHeaders'
 import {mods} from './interfaces'
 import User from '../classes/user'
 
-export default async function getScores(mode: mods, user: User, numberOfScores:number) {
+export default async function getScores(mode: mods, userId: number, numberOfScores:number) {
+  console.log(mode)
   let params = {
     include_fails:"1",
     mode:mode,
@@ -13,8 +14,9 @@ export default async function getScores(mode: mods, user: User, numberOfScores:n
   }
   let requestInfo = {
     params:params,
-    headers:getHeaders((global as any).selfTokens.access_token)
+    headers:getHeaders(global.selfTokens.access_token)
   }
-  let axiosRes = await axios.get(`${OSU_API_URL}users/${user.id}/scores/recent`, requestInfo)
+  let axiosRes = await axios.get(`${OSU_API_URL}users/${userId}/scores/recent`, requestInfo)
   return axiosRes.data
+
 }

@@ -11,7 +11,7 @@ export default function getBotPublicTokens(req: any, res: any){
     redirect_uri:HOST
   }
   axios.post("https://osu.ppy.sh/oauth/token", requestInfo).then((axiosRes: any) => { //Ask for token
-    (global as any).selfTokens = axiosRes.data
+    global.selfTokens = axiosRes.data
     console.log(axiosRes.data)
     fs.writeFile('./files/selfTokens.json', JSON.stringify(axiosRes.data), function(){})
     res.redirect("/")

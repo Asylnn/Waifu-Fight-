@@ -1,5 +1,3 @@
-// @ts-nocheck To ignore all "import React Erros"
-
 interface props {
   score: any
 }

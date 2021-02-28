@@ -1,5 +1,4 @@
 import {socket} from "../client.js"
-// @ts-nocheck
 
 interface props {
   visible: boolean

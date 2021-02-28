@@ -1,4 +1,7 @@
-function manageOsuScore(user, score){
+import {reducedScore} from '../osuAPIHandler/interfaces'
+import User from '../classes/user'
+
+export default function manageOsuScore(user:User, score:any): reducedScore{
 
   user.incrementPlayCount("osu")
 
@@ -47,5 +50,3 @@ function manageOsuScore(user, score){
   }
   return reducedScore
 }
-
-exports.manageOsuScore = manageOsuScore

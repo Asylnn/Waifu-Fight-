@@ -1,4 +1,3 @@
-// @ts-nocheck To ignore all "import React Erros"
 import Login from "./Login.js"
 import CoreInfo from "./CoreInfo.js"
 

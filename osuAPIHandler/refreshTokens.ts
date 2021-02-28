@@ -17,7 +17,7 @@ export default function refreshTokens(refresh_token:string, self:boolean){
 
   if(self){ //Refreshing bot's token only
     axios.post("https://osu.ppy.sh/oauth/token", requestInfo).then(axiosRes => { //Ask for token
-      (global as any).selfTokens = axiosRes.data
+      global.selfTokens = axiosRes.data
       fs.writeFile('./files/selfTokens.json', JSON.stringify(axiosRes.data), function(err){console.log(err)})
       ipAddr.put("local", "10669137")
       users.get("10669137").then(user => {

@@ -1,6 +1,3 @@
-// @ts-nocheck To ignore all "import React Erros"
-//import ReactDOM from 'modules/react-dom'
-
 import getStyleProperty from "../modules/functions.js"
 import LoginBox from "./LoginBox.js"
 //import User from '../classes/user'
@@ -15,11 +12,13 @@ interface state{
   margin:any
 }
 
-export default class Login extends React.Component<props, state> {
-  private ref = React.createRef<HTMLDivElement>()
 
+export default class Login extends React.Component<props, state> {
+  // @ts-ignore
+  private ref = React.createRef<HTMLDivElement>()
   constructor(props: any){
     super(props)
+    this.state
     this.state = {loginBoxOpenned:false, pos:{}, margin:{}}
     this.handleClick = this.handleClick.bind(this)
   }

@@ -1,4 +1,4 @@
-// @ts-nocheck To ignore all "import React Erros"
+
 //import User from '../classes/user'
 
 interface props {
